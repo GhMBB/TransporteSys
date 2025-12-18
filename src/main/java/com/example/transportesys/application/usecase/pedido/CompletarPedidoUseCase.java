@@ -1,0 +1,29 @@
+package com.example.transportesys.application.usecase.pedido;
+
+import com.example.transportesys.domain.exception.ResourceNotFoundException;
+import com.example.transportesys.domain.model.Pedido;
+import com.example.transportesys.domain.repository.PedidoRepository;
+
+/**
+ * Caso de uso para completar un pedido.
+ */
+public class CompletarPedidoUseCase {
+
+    private final PedidoRepository pedidoRepository;
+
+    public CompletarPedidoUseCase(PedidoRepository pedidoRepository) {
+        this.pedidoRepository = pedidoRepository;
+    }
+
+    public Pedido execute(Long pedidoId) {
+        // Buscar el pedido
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+            .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con ID: " + pedidoId));
+
+        // Completar
+        pedido.completar();
+
+        // Guardar y retornar
+        return pedidoRepository.save(pedido);
+    }
+}

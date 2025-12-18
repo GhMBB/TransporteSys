@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: transportesys-db
+    environment:
+      POSTGRES_DB: transportesys
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - transportesys-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Aplicación Spring Boot
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: transportesys-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/transportesys
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: MySecretKeyForJWTTokenGenerationTransporteSysApplication2024SuperSecureKey
+      JWT_EXPIRATION: 86400000
+    ports:
+      - "8080:8080"
+    networks:
+      - transportesys-network
+    restart: unless-stopped
+
+  # Prometheus (opcional - métricas)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: transportesys-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - transportesys-network
+    profiles:
+      - monitoring
+
+  # Grafana (opcional - visualización)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: transportesys-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - transportesys-network
+    profiles:
+      - monitoring
+
+networks:
+  transportesys-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  prometheus_data:
+  grafana_data:

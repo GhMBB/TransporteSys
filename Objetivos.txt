@@ -1,0 +1,106 @@
+1. Contexto del Negocio.
+La empresa gestiona un sistema de transporte urbano que conecta vehículos,
+conductores y pedidos en diferentes zonas de la ciudad. Esta prueba técnica tiene como
+objetivo evaluar tus competencias en diseño, desarrollo y mantenimiento de un
+backend sólido y escalable que permita mejorar el sistema actual. Se espera que
+apliques buenas prácticas de desarrollo, documentación y pruebas automatizadas,
+siguiendo metodologías ágiles y herramientas modernas de integración y despliegue
+continuo.
+2. Tecnologías Requeridas.
+✓ Java 11 o superior
+✓ Spring Boot
+✓ Hibernate con JPA
+✓ MySQL (opcionalmente PostgreSQL o H2 para pruebas locales)
+✓ Pruebas unitarias con JUnit y Mockito
+✓ Swagger (OpenAPI)
+✓ Docker para contenedorización
+✓ CI/CD básico (puede ser con GitHub Actions, GitLab CI, Jenkins, etc.)
+✓ Git
+✓ Maven o Gradle
+3. Tareas a Realizar.
+Las siguientes actividades se deben realizar sobre el backend del sistema:
+a) Refactorización y Mejoras de Entidades:
+✓ Convertir el campo: Capacidad del vehículo a tipo numérico (Double o
+BigDecimal) en kilogramos. Se espera un manejo preciso de unidades y posibles
+conversiones si fuera necesario en la lógica de negocio.
+✓ Validar formato de placas de vehículos (ejemplo: ABC-123). Implementar la
+validación utilizando expresiones regulares y considerar la extensibilidad para
+futuros formatos de placas.
+✓ Aplicar regla de negocio: un conductor no puede estar asociado a más de 3
+vehículos. Esto implica considerar posibles escenarios de asignación y
+desasignación.
+✓ Aplicar patrón de diseño adecuado para validaciones (ej. Service Layer /
+Specification Pattern). Se busca evidencia de un diseño modular y mantenible
+para las reglas de negocio.
+✓ Nueva Adición: Implementar la trazabilidad de cambios en las entidades Vehiculo
+y Conductor (ej. quién y cuándo modificó un registro).
+b) Gestión de Pedidos:
+✓ Crear API REST para registrar pedidos. La API debe ser robusta y manejar
+correctamente los estados del pedido.
+✓ Validar que el vehículo asignado tenga capacidad suficiente. Considerar el
+volumen o peso del pedido frente a la capacidad disponible del vehículo.
+✓ Validar que el conductor esté activo y no supere el límite de vehículos asignados.
+✓ Nueva Adición: Implementar la funcionalidad para actualizar el estado de un
+pedido (ej. "En Progreso", "Completado", "Cancelado") y notificar a los
+componentes relacionados.
+✓ Nueva Adición: Considerar el manejo de transacciones para asegurar la
+atomicidad de las operaciones relacionadas con la asignación de pedidos.
+c) Implementación de Funcionalidades CRUD y API REST:
+✓ Completar CRUD para vehículos y conductores, incluyendo eliminación lógica
+(campo activo). Se espera que la eliminación lógica afecte adecuadamente las
+reglas de negocio, como la asignación de vehículos a conductores.
+✓ Implementar API REST para registrar pedidos, con validación de capacidad y
+estado del conductor.
+✓ Validar vehículo activo y capacidad suficiente.
+✓ API REST versionada (ej. /api/v1/vehiculos). Demostrar un entendimiento de
+versionamiento de APIs y sus implicaciones.
+✓ Documentar todos los endpoints usando Swagger (OpenAPI), incluyendo ejemplos
+de request y response. La documentación debe ser clara y completa.
+✓ Manejo de errores global con @ControllerAdvice, definiendo códigos de estado
+HTTP apropiados y mensajes de error descriptivos y amigables para el cliente.
+✓ Endpoint de vehículos libres, conductores sin vehículos, y conteo de vehículos por
+conductor. Se espera un uso eficiente de las consultas a la base de datos.
+✓ Aplicar principios de código limpio y arquitectura limpia o hexagonal (opcional).
+Se valorará la organización del código, la separación de intereses y la legibilidad.
+✓ Nueva Adición: Implementar paginación y filtros para los listados de vehículos y
+conductores.
+✓ Nueva Adición: Implementar un mecanismo de caché básico para endpoints de
+consulta frecuentes (ej. vehículos libres) para mejorar el rendimiento.
+d) Seguridad:
+Implementar autenticación con Spring Security + JWT. Definir roles (ej. ADMIN,
+CONDUCTOR, CLIENTE) y proteger los endpoints según los permisos de cada rol.
+e) Pruebas Automatizadas:
+✓ Mínimo 5 pruebas unitarias por cada servicio principal (Vehículo, Conductor,
+Pedido) y 2 de integración por cada flujo crítico. Las pruebas deben cubrir casos de
+éxito, casos límite y manejo de errores.
+✓ Cobertura mínima del 80% con JaCoCo.
+✓ Aplicar buenas prácticas de testing: mocking de dependencias, asertivos claros,
+independencia de pruebas, y uso de datos de prueba representativos.
+✓ Nueva Adición: Incluir pruebas de validación de los datos de entrada (ej. formato
+de placas, capacidad).
+✓ Nueva Adición: Implementar tests de componentes o de slice test para verificar el
+correcto funcionamiento de las capas individuales (ej. @DataJpaTest,
+@WebMvcTest).
+f) DevOps y Contenedores:
+✓ Dockerfile y docker-compose.yml para la aplicación y la base de datos. El docker
+compose.yml debe permitir levantar todo el entorno de desarrollo con un solo
+comando.
+✓ Configuración de CI/CD: build, test, cobertura. El pipeline debe ser robusto y
+ejecutar todas las pruebas automatizadas.
+✓ Contenerizar la aplicación con Docker (Dockerfile y docker-compose.yml si aplica).
+✓ Configurar integración continua con al menos un paso automatizado (build y test).
+✓ Nueva Adición: Implementar un script para la inicialización de la base de datos
+(migrations) dentro del pipeline de CI/CD o en el docker-compose.yml.
+g) Observabilidad DevOps - BONUS:
+✓ Agregar Spring Boot Actuator + métricas Prometheus (opcional). Configurar
+métricas personalizadas relevantes para el negocio (ej. número de pedidos por
+hora, disponibilidad de vehículos).
+✓ Simulación de estrés (https://www.google.com/search?q=BONUS) con JMeter,
+Artillery o Gatling. Presentar los resultados y un breve análisis de rendimiento.
+h) Reportes y Métricas - BONUS:
+✓ Endpoint que devuelva número de vehículos por conductor.
+✓ Endpoint que liste los conductores sin vehículos asignados.
+✓ Puedes incluir lógica con consultas JPQL o nativas optimizadas para MySQL. Se
+valorará la eficiencia de las consultas.
+✓ Nueva Adición: Endpoint que muestre el promedio de capacidad utilizada por los
+vehículos asignados en un rango de fechas.
