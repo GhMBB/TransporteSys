@@ -51,6 +51,26 @@ public class JwtTokenProvider {
     }
 
     /**
+     * Obtiene la fecha de expiración del token.
+     */
+    public Date getExpirationDateFromToken(String token) {
+        Claims claims = Jwts.parser()
+            .verifyWith(secretKey)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
+
+        return claims.getExpiration();
+    }
+
+    /**
+     * Calcula la fecha de expiración para un nuevo token.
+     */
+    public Date calculateExpirationDate() {
+        return new Date(System.currentTimeMillis() + jwtExpiration);
+    }
+
+    /**
      * Obtiene el username del token.
      */
     public String getUsernameFromToken(String token) {

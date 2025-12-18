@@ -36,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Iniciar sesión y obtener token JWT",
-               description = "Autentica al usuario y devuelve un token JWT válido por 24 horas")
+               description = "Autentica al usuario y devuelve un token JWT válido por 24 horas con su fecha de expiración")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -50,6 +50,9 @@ public class AuthController {
 
         String jwt = tokenProvider.generateToken(authentication);
 
-        return ResponseEntity.ok(new AuthResponse(jwt, loginRequest.getUsername()));
+        // Obtener la fecha de expiración del token generado
+        java.util.Date expiresAt = tokenProvider.getExpirationDateFromToken(jwt);
+
+        return ResponseEntity.ok(new AuthResponse(jwt, loginRequest.getUsername(), expiresAt));
     }
 }

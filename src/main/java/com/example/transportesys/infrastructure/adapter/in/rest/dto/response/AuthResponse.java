@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * DTO de Response para autenticación.
  */
@@ -14,9 +16,11 @@ public class AuthResponse {
     private String token;
     private String type = "Bearer";
     private String username;
+    private Date expiresAt;
 
-    public AuthResponse(String token, String username) {
+    public AuthResponse(String token, String username, Date expiresAt) {
         this.token = token;
         this.username = username;
+        this.expiresAt = expiresAt;
     }
 }
