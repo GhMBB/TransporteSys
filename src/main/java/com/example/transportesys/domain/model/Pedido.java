@@ -74,6 +74,29 @@ public class Pedido {
     }
 
     /**
+     * Cambia el vehículo del pedido manteniendo el mismo conductor.
+     * Solo permite el cambio si el pedido está en estado PENDIENTE.
+     */
+    public void cambiarVehiculo(Long nuevoVehiculoId) {
+        if (nuevoVehiculoId == null) {
+            throw new DomainException("El nuevo vehículo no puede ser nulo");
+        }
+
+        if (this.estado != EstadoPedido.PENDIENTE) {
+            throw new DomainException(
+                String.format("No se puede cambiar el vehículo de un pedido en estado %s. Solo se permite en estado PENDIENTE.", this.estado)
+            );
+        }
+
+        if (this.conductorId == null) {
+            throw new DomainException("El pedido debe tener un conductor asignado para cambiar el vehículo");
+        }
+
+        this.vehiculoId = nuevoVehiculoId;
+        this.marcarComoModificado();
+    }
+
+    /**
      * Cambia el estado del pedido con validación de transiciones permitidas.
      */
     public void cambiarEstado(EstadoPedido nuevoEstado) {

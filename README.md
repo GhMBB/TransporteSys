@@ -316,18 +316,7 @@ docker-compose logs -f app    # Ver logs
 docker-compose restart app    # Reiniciar
 ```
 
-## 🤝 Contribución
-
-1. Fork del proyecto
-2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -am 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Crear Pull Request
-
-## 📝 Licencia
-
-Apache 2.0
 
 ## 👨‍💻 Autor
 
-Equipo TransporteSys
+Mauricio Bordon

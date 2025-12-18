@@ -10,6 +10,7 @@ import com.example.transportesys.domain.repository.UsuarioRepository;
 import com.example.transportesys.domain.repository.VehiculoRepository;
 import com.example.transportesys.domain.specification.ConductorEstaActivoSpec;
 import com.example.transportesys.domain.specification.VehiculoEstaActivoSpec;
+import com.example.transportesys.domain.specification.VehiculoEstaAsignadoAConductorSpec;
 import com.example.transportesys.domain.specification.VehiculoTieneCapacidadSuficienteSpec;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,6 +60,14 @@ public class BeanConfiguration {
             VehiculoRepository vehiculoRepository,
             ConductorRepository conductorRepository) {
         return new AsignarConductorAVehiculoUseCase(vehiculoRepository, conductorRepository);
+    }
+
+    @Bean
+    public DevolverVehiculoConductorUseCase devolverVehiculoConductorUseCase(
+            VehiculoRepository vehiculoRepository,
+            ConductorRepository conductorRepository,
+            PedidoRepository pedidoRepository) {
+        return new DevolverVehiculoConductorUseCase(vehiculoRepository, conductorRepository, pedidoRepository);
     }
 
     // ============ USE CASES DE CONDUCTOR ============
@@ -147,6 +156,17 @@ public class BeanConfiguration {
     @Bean
     public ObtenerPedidoUseCase obtenerPedidoUseCase(PedidoRepository pedidoRepository) {
         return new ObtenerPedidoUseCase(pedidoRepository);
+    }
+
+    @Bean
+    public CambiarVehiculoPedidoUseCase cambiarVehiculoPedidoUseCase(
+            PedidoRepository pedidoRepository,
+            VehiculoRepository vehiculoRepository,
+            VehiculoEstaActivoSpec vehiculoActivoSpec,
+            VehiculoEstaAsignadoAConductorSpec vehiculoAsignadoConductorSpec,
+            VehiculoTieneCapacidadSuficienteSpec capacidadSpec) {
+        return new CambiarVehiculoPedidoUseCase(pedidoRepository, vehiculoRepository,
+                                                vehiculoActivoSpec, vehiculoAsignadoConductorSpec, capacidadSpec);
     }
 
     // ============ USE CASES DE USUARIO ============

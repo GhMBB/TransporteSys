@@ -5,6 +5,7 @@ import com.example.transportesys.domain.exception.DomainException;
 import com.example.transportesys.domain.exception.ResourceNotFoundException;
 import com.example.transportesys.domain.model.Usuario;
 import com.example.transportesys.domain.repository.UsuarioRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -19,6 +20,7 @@ public class UpdateUsuarioUseCase {
         this.usuarioRepository = usuarioRepository;
     }
 
+    @Transactional
     public Usuario execute(Long usuarioId, String email, Set<RolUsuario> roles) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + usuarioId));

@@ -5,6 +5,7 @@ import com.example.transportesys.domain.model.Vehiculo;
 import com.example.transportesys.domain.repository.VehiculoRepository;
 import com.example.transportesys.domain.valueobject.Capacidad;
 import com.example.transportesys.domain.valueobject.Placa;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Caso de uso para crear un nuevo vehículo.
@@ -17,6 +18,7 @@ public class CrearVehiculoUseCase {
         this.vehiculoRepository = vehiculoRepository;
     }
 
+    @Transactional
     public Vehiculo execute(String placaStr, Double capacidadKg) {
         // Validar que la placa no exista
         Placa placa = new Placa(placaStr);

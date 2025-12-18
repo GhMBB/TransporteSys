@@ -5,6 +5,7 @@ import com.example.transportesys.domain.exception.DomainException;
 import com.example.transportesys.domain.model.Usuario;
 import com.example.transportesys.domain.repository.UsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -22,6 +23,7 @@ public class RegisterUserUseCase {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public Usuario execute(String username, String password, String email, Set<RolUsuario> roles) {
         // Validar que el username no exista
         if (usuarioRepository.existsByUsername(username)) {

@@ -4,6 +4,7 @@ import com.example.transportesys.domain.exception.ResourceNotFoundException;
 import com.example.transportesys.domain.model.Conductor;
 import com.example.transportesys.domain.repository.ConductorRepository;
 import com.example.transportesys.domain.valueobject.LicenciaConducir;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Caso de uso para actualizar un conductor existente.
@@ -16,6 +17,7 @@ public class ActualizarConductorUseCase {
         this.conductorRepository = conductorRepository;
     }
 
+    @Transactional
     public Conductor execute(Long id, String nombre, String licenciaStr) {
         // Buscar el conductor
         Conductor conductor = conductorRepository.findById(id)

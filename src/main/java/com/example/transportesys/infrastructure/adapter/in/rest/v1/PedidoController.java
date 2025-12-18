@@ -32,6 +32,7 @@ public class PedidoController {
     private final IniciarPedidoUseCase iniciarPedidoUseCase;
     private final CompletarPedidoUseCase completarPedidoUseCase;
     private final CancelarPedidoUseCase cancelarPedidoUseCase;
+    private final CambiarVehiculoPedidoUseCase cambiarVehiculoUseCase;
     private final ListarPedidosUseCase listarPedidosUseCase;
     private final ObtenerPedidoUseCase obtenerPedidoUseCase;
     private final PedidoRestMapper mapper;
@@ -42,6 +43,7 @@ public class PedidoController {
             IniciarPedidoUseCase iniciarPedidoUseCase,
             CompletarPedidoUseCase completarPedidoUseCase,
             CancelarPedidoUseCase cancelarPedidoUseCase,
+            CambiarVehiculoPedidoUseCase cambiarVehiculoUseCase,
             ListarPedidosUseCase listarPedidosUseCase,
             ObtenerPedidoUseCase obtenerPedidoUseCase,
             PedidoRestMapper mapper) {
@@ -50,6 +52,7 @@ public class PedidoController {
         this.iniciarPedidoUseCase = iniciarPedidoUseCase;
         this.completarPedidoUseCase = completarPedidoUseCase;
         this.cancelarPedidoUseCase = cancelarPedidoUseCase;
+        this.cambiarVehiculoUseCase = cambiarVehiculoUseCase;
         this.listarPedidosUseCase = listarPedidosUseCase;
         this.obtenerPedidoUseCase = obtenerPedidoUseCase;
         this.mapper = mapper;
@@ -164,6 +167,17 @@ public class PedidoController {
     @Operation(summary = "Cancelar un pedido")
     public ResponseEntity<PedidoResponse> cancelar(@PathVariable Long id) {
         Pedido pedido = cancelarPedidoUseCase.execute(id);
+        return ResponseEntity.ok(mapper.toResponse(pedido));
+    }
+
+    @PatchMapping("/{pedidoId}/vehiculo")
+    @Operation(summary = "Cambiar el vehículo de un pedido",
+               description = "Cambia el vehículo de un pedido en estado PENDIENTE. El nuevo vehículo debe estar asignado al mismo conductor.")
+    public ResponseEntity<PedidoResponse> cambiarVehiculo(
+            @PathVariable Long pedidoId,
+            @RequestParam Long vehiculoId) {
+
+        Pedido pedido = cambiarVehiculoUseCase.execute(pedidoId, vehiculoId);
         return ResponseEntity.ok(mapper.toResponse(pedido));
     }
 }

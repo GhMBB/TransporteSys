@@ -3,18 +3,18 @@ package com.example.transportesys.application.usecase.pedido;
 import com.example.transportesys.domain.exception.ResourceNotFoundException;
 import com.example.transportesys.domain.model.Pedido;
 import com.example.transportesys.domain.repository.PedidoRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Caso de uso para iniciar un pedido (cambiar a EN_PROGRESO).
  */
+@RequiredArgsConstructor
 public class IniciarPedidoUseCase {
 
     private final PedidoRepository pedidoRepository;
 
-    public IniciarPedidoUseCase(PedidoRepository pedidoRepository) {
-        this.pedidoRepository = pedidoRepository;
-    }
-
+    @Transactional
     public Pedido execute(Long pedidoId) {
         // Buscar el pedido
         Pedido pedido = pedidoRepository.findById(pedidoId)

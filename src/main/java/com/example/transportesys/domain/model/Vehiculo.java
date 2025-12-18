@@ -90,6 +90,13 @@ public class Vehiculo {
     }
 
     /**
+     * Verifica si el vehículo está asignado a un conductor específico.
+     */
+    public boolean estaAsignadoA(Long conductorId) {
+        return this.conductorId != null && this.conductorId.equals(conductorId);
+    }
+
+    /**
      * Desactiva el vehículo (eliminación lógica).
      */
     public void desactivar() {

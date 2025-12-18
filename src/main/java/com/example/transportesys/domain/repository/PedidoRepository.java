@@ -30,6 +30,16 @@ public interface PedidoRepository {
 
     List<Pedido> findByConductorId(Long conductorId);
 
+    /**
+     * Encuentra pedidos activos (PENDIENTE o EN_PROGRESO) por vehículo.
+     */
+    List<Pedido> findActivosByVehiculoId(Long vehiculoId);
+
+    /**
+     * Cuenta pedidos activos (PENDIENTE o EN_PROGRESO) por vehículo.
+     */
+    long countActivosByVehiculoId(Long vehiculoId);
+
     List<Pedido> findByFechaCreacionBetween(LocalDateTime inicio, LocalDateTime fin);
 
     void deleteById(Long id);

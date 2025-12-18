@@ -1,11 +1,13 @@
 package com.example.transportesys.application.usecase.vehiculo;
 
 import com.example.transportesys.domain.exception.ResourceNotFoundException;
+import com.example.transportesys.domain.exception.VehiculoYaAsignadoException;
 import com.example.transportesys.domain.model.Conductor;
 import com.example.transportesys.domain.model.Vehiculo;
 import com.example.transportesys.domain.repository.ConductorRepository;
 import com.example.transportesys.domain.repository.VehiculoRepository;
 import com.example.transportesys.domain.specification.ConductorPuedeAsignarVehiculoSpec;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Caso de uso para asignar un conductor a un vehículo.
@@ -24,6 +26,7 @@ public class AsignarConductorAVehiculoUseCase {
         this.conductorPuedeAsignarSpec = new ConductorPuedeAsignarVehiculoSpec();
     }
 
+    @Transactional
     public Vehiculo execute(Long vehiculoId, Long conductorId) {
         // Buscar vehículo
         Vehiculo vehiculo = vehiculoRepository.findById(vehiculoId)
@@ -32,6 +35,11 @@ public class AsignarConductorAVehiculoUseCase {
         // Buscar conductor
         Conductor conductor = conductorRepository.findById(conductorId)
             .orElseThrow(() -> new ResourceNotFoundException("Conductor no encontrado con ID: " + conductorId));
+
+        // CRITICAL: Validar que el vehículo no esté asignado a otro conductor
+        if (vehiculo.estaAsignado() && !vehiculo.estaAsignadoA(conductorId)) {
+            throw new VehiculoYaAsignadoException(vehiculoId, vehiculo.getConductorId());
+        }
 
         // Validar que el conductor pueda asignar más vehículos
         if (!conductorPuedeAsignarSpec.isSatisfiedBy(conductor)) {
@@ -43,8 +51,10 @@ public class AsignarConductorAVehiculoUseCase {
         // Asignar conductor al vehículo
         vehiculo.asignarConductor(conductorId);
 
-        // Asignar vehículo al conductor
-        conductor.asignarVehiculo(vehiculoId);
+        // Asignar vehículo al conductor (solo si no lo tiene ya)
+        if (!conductor.getVehiculosIds().contains(vehiculoId)) {
+            conductor.asignarVehiculo(vehiculoId);
+        }
 
         // Guardar ambos
         vehiculoRepository.save(vehiculo);

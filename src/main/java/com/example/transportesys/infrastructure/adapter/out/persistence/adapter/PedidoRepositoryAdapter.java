@@ -103,6 +103,18 @@ public class PedidoRepositoryAdapter implements PedidoRepository {
     }
 
     @Override
+    public List<Pedido> findActivosByVehiculoId(Long vehiculoId) {
+        return jpaRepository.findActivosByVehiculoId(vehiculoId).stream()
+            .map(mapper::toDomain)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countActivosByVehiculoId(Long vehiculoId) {
+        return jpaRepository.countActivosByVehiculoId(vehiculoId);
+    }
+
+    @Override
     public List<Pedido> findByFechaCreacionBetween(LocalDateTime inicio, LocalDateTime fin) {
         return jpaRepository.findByFechaCreacionBetween(inicio, fin).stream()
             .map(mapper::toDomain)

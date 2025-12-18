@@ -4,6 +4,7 @@ import com.example.transportesys.domain.exception.ConductorDuplicadoException;
 import com.example.transportesys.domain.model.Conductor;
 import com.example.transportesys.domain.repository.ConductorRepository;
 import com.example.transportesys.domain.valueobject.LicenciaConducir;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Caso de uso para crear un nuevo conductor.
@@ -16,6 +17,7 @@ public class CrearConductorUseCase {
         this.conductorRepository = conductorRepository;
     }
 
+    @Transactional
     public Conductor execute(String nombre, String licenciaStr) {
         // Validar que la licencia no exista
         LicenciaConducir licencia = new LicenciaConducir(licenciaStr);

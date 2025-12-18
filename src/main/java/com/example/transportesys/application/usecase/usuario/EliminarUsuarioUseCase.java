@@ -3,6 +3,7 @@ package com.example.transportesys.application.usecase.usuario;
 import com.example.transportesys.domain.exception.ResourceNotFoundException;
 import com.example.transportesys.domain.model.Usuario;
 import com.example.transportesys.domain.repository.UsuarioRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Caso de uso para eliminar (desactivar) un usuario.
@@ -18,6 +19,7 @@ public class EliminarUsuarioUseCase {
     /**
      * Desactiva el usuario (eliminación lógica).
      */
+    @Transactional
     public void execute(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + usuarioId));

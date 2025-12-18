@@ -5,6 +5,7 @@ import com.example.transportesys.domain.exception.ResourceNotFoundException;
 import com.example.transportesys.domain.model.Usuario;
 import com.example.transportesys.domain.repository.UsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Caso de uso para cambiar la contraseña de un usuario.
@@ -20,6 +21,7 @@ public class ChangePasswordUseCase {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void execute(Long usuarioId, String oldPassword, String newPassword) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + usuarioId));
@@ -37,6 +39,7 @@ public class ChangePasswordUseCase {
     /**
      * Cambio de contraseña por admin (sin verificar contraseña anterior)
      */
+    @Transactional
     public void executeByAdmin(Long usuarioId, String newPassword) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + usuarioId));

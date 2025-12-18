@@ -4,6 +4,7 @@ import com.example.transportesys.domain.enums.EstadoPedido;
 import com.example.transportesys.domain.exception.ResourceNotFoundException;
 import com.example.transportesys.domain.model.Pedido;
 import com.example.transportesys.domain.repository.PedidoRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Caso de uso para actualizar el estado de un pedido.
@@ -17,6 +18,7 @@ public class ActualizarEstadoPedidoUseCase {
         this.pedidoRepository = pedidoRepository;
     }
 
+    @Transactional
     public Pedido execute(Long pedidoId, EstadoPedido nuevoEstado) {
         // Buscar el pedido
         Pedido pedido = pedidoRepository.findById(pedidoId)

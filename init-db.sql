@@ -1,15 +1,8 @@
 -- Script de inicialización de la base de datos
--- Ejecutar como usuario postgres
+-- La base de datos 'transportesys' ya se crea automáticamente por POSTGRES_DB
+-- Este script se ejecuta después de crear la base de datos
 
--- Crear la base de datos
-CREATE DATABASE transportesys
-    WITH
-    OWNER = postgres
-    ENCODING = 'UTF8'
-    LC_COLLATE = 'Spanish_Spain.1252'
-    LC_CTYPE = 'Spanish_Spain.1252'
-    TABLESPACE = pg_default
-    CONNECTION LIMIT = -1;
+-- Comentario sobre la base de datos
+-- COMMENT ON DATABASE transportesys IS 'Base de datos del sistema de transporte urbano';
 
--- Comentario
-COMMENT ON DATABASE transportesys IS 'Base de datos del sistema de transporte urbano';
+-- Aquí puedes agregar tablas adicionales, datos de prueba, etc.

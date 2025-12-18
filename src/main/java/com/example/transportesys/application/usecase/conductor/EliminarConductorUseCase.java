@@ -3,6 +3,7 @@ package com.example.transportesys.application.usecase.conductor;
 import com.example.transportesys.domain.exception.ResourceNotFoundException;
 import com.example.transportesys.domain.model.Conductor;
 import com.example.transportesys.domain.repository.ConductorRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Caso de uso para eliminar lógicamente un conductor.
@@ -15,6 +16,7 @@ public class EliminarConductorUseCase {
         this.conductorRepository = conductorRepository;
     }
 
+    @Transactional
     public void execute(Long id) {
         // Buscar el conductor
         Conductor conductor = conductorRepository.findById(id)

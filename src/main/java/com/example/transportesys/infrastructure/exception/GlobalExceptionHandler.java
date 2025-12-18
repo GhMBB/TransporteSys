@@ -104,6 +104,51 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(VehiculoYaAsignadoException.class)
+    public ResponseEntity<ApiError> handleVehiculoYaAsignadoException(
+            VehiculoYaAsignadoException ex,
+            HttpServletRequest request) {
+
+        ApiError error = new ApiError(
+            HttpStatus.CONFLICT.value(),
+            "Vehicle Already Assigned",
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(VehiculoEnUsoException.class)
+    public ResponseEntity<ApiError> handleVehiculoEnUsoException(
+            VehiculoEnUsoException ex,
+            HttpServletRequest request) {
+
+        ApiError error = new ApiError(
+            HttpStatus.CONFLICT.value(),
+            "Vehicle In Use",
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(VehiculoNoAsignadoAConductorException.class)
+    public ResponseEntity<ApiError> handleVehiculoNoAsignadoAConductorException(
+            VehiculoNoAsignadoAConductorException ex,
+            HttpServletRequest request) {
+
+        ApiError error = new ApiError(
+            HttpStatus.BAD_REQUEST.value(),
+            "Vehicle Not Assigned To Driver",
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<ApiError> handleDomainException(
             DomainException ex,

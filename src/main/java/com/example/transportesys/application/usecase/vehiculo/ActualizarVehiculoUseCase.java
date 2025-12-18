@@ -5,6 +5,7 @@ import com.example.transportesys.domain.model.Vehiculo;
 import com.example.transportesys.domain.repository.VehiculoRepository;
 import com.example.transportesys.domain.valueobject.Capacidad;
 import com.example.transportesys.domain.valueobject.Placa;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Caso de uso para actualizar un vehículo existente.
@@ -17,6 +18,7 @@ public class ActualizarVehiculoUseCase {
         this.vehiculoRepository = vehiculoRepository;
     }
 
+    @Transactional
     public Vehiculo execute(Long id, String placaStr, Double capacidadKg) {
         // Buscar el vehículo
         Vehiculo vehiculo = vehiculoRepository.findById(id)

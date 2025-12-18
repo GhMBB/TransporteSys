@@ -5,6 +5,8 @@ import com.example.transportesys.infrastructure.adapter.out.persistence.entity.P
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -21,6 +23,12 @@ public interface PedidoJpaRepository extends JpaRepository<PedidoEntity, Long> {
     List<PedidoEntity> findByVehiculoId(Long vehiculoId);
 
     List<PedidoEntity> findByConductorId(Long conductorId);
+
+    @Query("SELECT p FROM PedidoEntity p WHERE p.vehiculoId = :vehiculoId AND p.estado IN ('PENDIENTE', 'EN_PROGRESO')")
+    List<PedidoEntity> findActivosByVehiculoId(@Param("vehiculoId") Long vehiculoId);
+
+    @Query("SELECT COUNT(p) FROM PedidoEntity p WHERE p.vehiculoId = :vehiculoId AND p.estado IN ('PENDIENTE', 'EN_PROGRESO')")
+    long countActivosByVehiculoId(@Param("vehiculoId") Long vehiculoId);
 
     List<PedidoEntity> findByFechaCreacionBetween(LocalDateTime inicio, LocalDateTime fin);
 

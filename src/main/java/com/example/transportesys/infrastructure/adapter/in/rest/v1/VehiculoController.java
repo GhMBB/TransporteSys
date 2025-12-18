@@ -35,6 +35,7 @@ public class VehiculoController {
     private final ListarVehiculosUseCase listarVehiculosUseCase;
     private final ObtenerVehiculosLibresUseCase obtenerVehiculosLibresUseCase;
     private final AsignarConductorAVehiculoUseCase asignarConductorUseCase;
+    private final DevolverVehiculoConductorUseCase devolverVehiculoUseCase;
     private final VehiculoRestMapper mapper;
 
     public VehiculoController(
@@ -45,6 +46,7 @@ public class VehiculoController {
             ListarVehiculosUseCase listarVehiculosUseCase,
             ObtenerVehiculosLibresUseCase obtenerVehiculosLibresUseCase,
             AsignarConductorAVehiculoUseCase asignarConductorUseCase,
+            DevolverVehiculoConductorUseCase devolverVehiculoUseCase,
             VehiculoRestMapper mapper) {
         this.crearVehiculoUseCase = crearVehiculoUseCase;
         this.actualizarVehiculoUseCase = actualizarVehiculoUseCase;
@@ -53,6 +55,7 @@ public class VehiculoController {
         this.listarVehiculosUseCase = listarVehiculosUseCase;
         this.obtenerVehiculosLibresUseCase = obtenerVehiculosLibresUseCase;
         this.asignarConductorUseCase = asignarConductorUseCase;
+        this.devolverVehiculoUseCase = devolverVehiculoUseCase;
         this.mapper = mapper;
     }
 
@@ -155,6 +158,15 @@ public class VehiculoController {
             @PathVariable Long conductorId) {
 
         Vehiculo vehiculo = asignarConductorUseCase.execute(vehiculoId, conductorId);
+        return ResponseEntity.ok(mapper.toResponse(vehiculo));
+    }
+
+    @PostMapping("/{vehiculoId}/devolver")
+    @Operation(summary = "Devolver un vehículo (desasignarlo del conductor)",
+               description = "Desasigna un vehículo de su conductor. No permite devolver si hay pedidos activos.")
+    @CacheEvict(value = {"vehiculos", "vehiculosLibres"}, allEntries = true)
+    public ResponseEntity<VehiculoResponse> devolver(@PathVariable Long vehiculoId) {
+        Vehiculo vehiculo = devolverVehiculoUseCase.execute(vehiculoId);
         return ResponseEntity.ok(mapper.toResponse(vehiculo));
     }
 

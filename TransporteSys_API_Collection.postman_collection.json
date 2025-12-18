@@ -1,0 +1,1345 @@
+{
+	"info": {
+		"_postman_id": "transportesys-api-2024",
+		"name": "TransporteSys API - Complete Collection",
+		"description": "Colección completa de la API de TransporteSys con todos los endpoints documentados y ejemplos de uso. Incluye los nuevos endpoints de gestión de vehículos y cambio de vehículo en pedidos.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "🔐 Autenticación",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('authToken', response.token);",
+									"    pm.environment.set('authToken', response.token);",
+									"    console.log('Token guardado: ' + response.token.substring(0, 20) + '...');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"newAdmin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Iniciar sesión y obtener token JWT válido por 24 horas"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de autenticación"
+		},
+		{
+			"name": "🚗 Vehículos",
+			"item": [
+				{
+					"name": "Crear Vehículo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"placa\": \"XYZ-999\",\n  \"capacidadKg\": 4000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos"
+							]
+						},
+						"description": "Crear un nuevo vehículo"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Vehículos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos"
+							]
+						},
+						"description": "Listar todos los vehículos"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Vehículos (Paginado)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Listar vehículos con paginación"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Vehículo por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos",
+								"1"
+							]
+						},
+						"description": "Obtener un vehículo específico por ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Vehículo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"placa\": \"XYZ-999\",\n  \"capacidadKg\": 4500\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos",
+								"1"
+							]
+						},
+						"description": "Actualizar un vehículo existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehículos Activos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos/activos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos",
+								"activos"
+							]
+						},
+						"description": "Listar solo vehículos activos"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehículos Libres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos/libres",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos",
+								"libres"
+							]
+						},
+						"description": "Obtener vehículos sin conductor asignado"
+					},
+					"response": []
+				},
+				{
+					"name": "✨ Asignar Conductor a Vehículo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos/1/asignar-conductor/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos",
+								"1",
+								"asignar-conductor",
+								"1"
+							]
+						},
+						"description": "Asignar un conductor a un vehículo. Validaciones:\n- Vehículo no debe estar asignado a otro conductor\n- Conductor no debe tener más de 3 vehículos\n- Ambos deben estar activos"
+					},
+					"response": []
+				},
+				{
+					"name": "🆕 Devolver Vehículo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos/5/devolver",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos",
+								"5",
+								"devolver"
+							]
+						},
+						"description": "**NUEVO ENDPOINT**\n\nDesasignar un vehículo de su conductor.\n\nValidaciones:\n- El vehículo debe estar asignado a un conductor\n- No debe tener pedidos activos (PENDIENTE o EN_PROGRESO)\n\nRetorna 409 Conflict si hay pedidos activos."
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Vehículo (Lógico)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos",
+								"1"
+							]
+						},
+						"description": "Eliminación lógica del vehículo (marca como inactivo)"
+					},
+					"response": []
+				}
+			],
+			"description": "Gestión completa de vehículos"
+		},
+		{
+			"name": "👨‍✈️ Conductores",
+			"item": [
+				{
+					"name": "Crear Conductor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Pedro Martínez\",\n  \"licencia\": \"LIC999888\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/conductores",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conductores"
+							]
+						},
+						"description": "Crear un nuevo conductor"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Conductores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/conductores",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conductores"
+							]
+						},
+						"description": "Listar todos los conductores"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Conductores (Paginado)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/conductores?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conductores"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Listar conductores con paginación"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Conductor por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/conductores/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conductores",
+								"1"
+							]
+						},
+						"description": "Obtener un conductor específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Conductor",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Pedro Martínez López\",\n  \"licencia\": \"LIC999888\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/conductores/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conductores",
+								"1"
+							]
+						},
+						"description": "Actualizar conductor existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Conductores Activos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/conductores/activos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conductores",
+								"activos"
+							]
+						},
+						"description": "Listar solo conductores activos"
+					},
+					"response": []
+				},
+				{
+					"name": "Conductores Sin Vehículos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/conductores/sin-vehiculos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conductores",
+								"sin-vehiculos"
+							]
+						},
+						"description": "Listar conductores sin vehículos asignados"
+					},
+					"response": []
+				},
+				{
+					"name": "Conteo de Vehículos por Conductor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/conductores/conteo-vehiculos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conductores",
+								"conteo-vehiculos"
+							]
+						},
+						"description": "Obtener mapa con cantidad de vehículos por conductor"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Conductor (Lógico)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/conductores/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"conductores",
+								"1"
+							]
+						},
+						"description": "Eliminación lógica del conductor"
+					},
+					"response": []
+				}
+			],
+			"description": "Gestión completa de conductores"
+		},
+		{
+			"name": "📦 Pedidos",
+			"item": [
+				{
+					"name": "Crear Pedido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"descripcion\": \"Entrega urgente de materiales\",\n  \"pesoKg\": 1500,\n  \"vehiculoId\": 2,\n  \"conductorId\": 1,\n  \"direccionOrigen\": \"Calle Principal 100\",\n  \"direccionDestino\": \"Av. Industrial 500\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos"
+							]
+						},
+						"description": "Crear un nuevo pedido validando capacidad y estado"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Pedidos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos"
+							]
+						},
+						"description": "Listar todos los pedidos"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Pedidos (Paginado)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Listar pedidos con paginación"
+					},
+					"response": []
+				},
+				{
+					"name": "Filtrar Pedidos por Estado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos?estado=PENDIENTE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos"
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "PENDIENTE",
+									"description": "PENDIENTE | EN_PROGRESO | COMPLETADO | CANCELADO"
+								}
+							]
+						},
+						"description": "Filtrar pedidos por estado"
+					},
+					"response": []
+				},
+				{
+					"name": "Filtrar Pedidos por Vehículo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos?vehiculoId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos"
+							],
+							"query": [
+								{
+									"key": "vehiculoId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Filtrar pedidos por vehículo"
+					},
+					"response": []
+				},
+				{
+					"name": "Filtrar Pedidos por Conductor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos?conductorId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos"
+							],
+							"query": [
+								{
+									"key": "conductorId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Filtrar pedidos por conductor"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Pedido por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"1"
+							]
+						},
+						"description": "Obtener un pedido específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Iniciar Pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos/1/iniciar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"1",
+								"iniciar"
+							]
+						},
+						"description": "Cambiar estado de pedido a EN_PROGRESO"
+					},
+					"response": []
+				},
+				{
+					"name": "Completar Pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos/1/completar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"1",
+								"completar"
+							]
+						},
+						"description": "Cambiar estado de pedido a COMPLETADO"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancelar Pedido",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos/1/cancelar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"1",
+								"cancelar"
+							]
+						},
+						"description": "Cambiar estado de pedido a CANCELADO"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Estado de Pedido",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos/1/estado?estado=EN_PROGRESO",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"1",
+								"estado"
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "EN_PROGRESO",
+									"description": "PENDIENTE | EN_PROGRESO | COMPLETADO | CANCELADO"
+								}
+							]
+						},
+						"description": "Actualizar el estado del pedido con validación de transiciones"
+					},
+					"response": []
+				},
+				{
+					"name": "🆕 Cambiar Vehículo de Pedido",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos/1/vehiculo?vehiculoId=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"1",
+								"vehiculo"
+							],
+							"query": [
+								{
+									"key": "vehiculoId",
+									"value": "2",
+									"description": "ID del nuevo vehículo"
+								}
+							]
+						},
+						"description": "**NUEVO ENDPOINT**\n\nCambiar el vehículo asignado a un pedido.\n\nValidaciones:\n- El pedido debe estar en estado PENDIENTE\n- El nuevo vehículo debe estar asignado al mismo conductor\n- El nuevo vehículo debe tener capacidad suficiente\n- El nuevo vehículo debe estar activo\n\nRetorna:\n- 200 OK: Cambio exitoso\n- 400 Bad Request: Validación fallida\n- 409 Conflict: Capacidad insuficiente"
+					},
+					"response": []
+				}
+			],
+			"description": "Gestión completa de pedidos"
+		},
+		{
+			"name": "👤 Usuarios",
+			"item": [
+				{
+					"name": "Registrar Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"nuevouser\",\n  \"password\": \"password123\",\n  \"email\": \"nuevo@example.com\",\n  \"roles\": [\"CONDUCTOR\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/usuarios/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"register"
+							]
+						},
+						"description": "Registrar nuevo usuario (solo ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Usuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/usuarios",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios"
+							]
+						},
+						"description": "Listar todos los usuarios (solo ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Usuario Actual",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/usuarios/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"me"
+							]
+						},
+						"description": "Obtener información del usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Usuario por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/usuarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"1"
+							]
+						},
+						"description": "Obtener usuario por ID (solo ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Usuario",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"nuevoemail@example.com\",\n  \"roles\": [\"CONDUCTOR\", \"ADMIN\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/usuarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"1"
+							]
+						},
+						"description": "Actualizar usuario (solo ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar Mi Contraseña",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"oldPassword\": \"passwordActual\",\n  \"newPassword\": \"nuevoPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/usuarios/me/change-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"me",
+								"change-password"
+							]
+						},
+						"description": "Cambiar contraseña del usuario actual"
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar Contraseña de Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"oldPassword\": \"passwordActual\",\n  \"newPassword\": \"nuevoPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/usuarios/1/change-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"1",
+								"change-password"
+							]
+						},
+						"description": "Cambiar contraseña de un usuario específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Resetear Contraseña (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/usuarios/1/reset-password?newPassword=resetPassword123",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"1",
+								"reset-password"
+							],
+							"query": [
+								{
+									"key": "newPassword",
+									"value": "resetPassword123"
+								}
+							]
+						},
+						"description": "Resetear contraseña sin validar la anterior (solo ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Usuario",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/usuarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"1"
+							]
+						},
+						"description": "Desactivar usuario (solo ADMIN)"
+					},
+					"response": []
+				}
+			],
+			"description": "Gestión de usuarios y autenticación"
+		},
+		{
+			"name": "📊 Reportes",
+			"item": [
+				{
+					"name": "Vehículos por Conductor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/reportes/vehiculos-por-conductor",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reportes",
+								"vehiculos-por-conductor"
+							]
+						},
+						"description": "Obtener mapa con cantidad de vehículos por conductor"
+					},
+					"response": []
+				},
+				{
+					"name": "Vehículos Libres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/reportes/vehiculos-libres",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reportes",
+								"vehiculos-libres"
+							]
+						},
+						"description": "Lista de vehículos sin conductor asignado"
+					},
+					"response": []
+				},
+				{
+					"name": "Conductores Sin Vehículos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/reportes/conductores-sin-vehiculos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reportes",
+								"conductores-sin-vehiculos"
+							]
+						},
+						"description": "Lista de conductores sin vehículos asignados"
+					},
+					"response": []
+				}
+			],
+			"description": "Reportes y métricas del sistema"
+		},
+		{
+			"name": "🧪 Tests de Casos de Uso Nuevos",
+			"item": [
+				{
+					"name": "TEST 1 - Bug Fix: Asignar Vehículo Ya Asignado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos/1/asignar-conductor/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos",
+								"1",
+								"asignar-conductor",
+								"2"
+							]
+						},
+						"description": "Intentar asignar vehículo 1 (asignado a conductor 1) al conductor 2.\nEsperado: 409 Conflict"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST 2 - Devolver Vehículo Sin Pedidos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos/5/devolver",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos",
+								"5",
+								"devolver"
+							]
+						},
+						"description": "Devolver vehículo que no tiene pedidos activos.\nEsperado: 200 OK"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST 3 - Devolver Vehículo Con Pedidos Activos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/vehiculos/1/devolver",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vehiculos",
+								"1",
+								"devolver"
+							]
+						},
+						"description": "Intentar devolver vehículo con pedidos PENDIENTE o EN_PROGRESO.\nEsperado: 409 Conflict"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST 4 - Cambiar Vehículo (Mismo Conductor)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos/1/vehiculo?vehiculoId=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"1",
+								"vehiculo"
+							],
+							"query": [
+								{
+									"key": "vehiculoId",
+									"value": "2"
+								}
+							]
+						},
+						"description": "Cambiar vehículo de pedido PENDIENTE a otro del mismo conductor.\nEsperado: 200 OK"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST 5 - Cambiar a Vehículo de Otro Conductor",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos/1/vehiculo?vehiculoId=4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"1",
+								"vehiculo"
+							],
+							"query": [
+								{
+									"key": "vehiculoId",
+									"value": "4"
+								}
+							]
+						},
+						"description": "Intentar cambiar a vehículo de otro conductor.\nEsperado: 400 Bad Request"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST 6 - Cambiar con Capacidad Insuficiente",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/pedidos/3/vehiculo?vehiculoId=5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"pedidos",
+								"3",
+								"vehiculo"
+							],
+							"query": [
+								{
+									"key": "vehiculoId",
+									"value": "5"
+								}
+							]
+						},
+						"description": "Intentar cambiar a vehículo con capacidad insuficiente.\nEsperado: 409 Conflict"
+					},
+					"response": []
+				}
+			],
+			"description": "Tests de validación para los nuevos casos de uso"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

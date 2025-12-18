@@ -1,7 +1,6 @@
 package com.example.transportesys.infrastructure.config;
 
 import com.example.transportesys.application.usecase.conductor.CrearConductorUseCase;
-import com.example.transportesys.application.usecase.pedido.CambiarEstadoPedidoUseCase;
 import com.example.transportesys.application.usecase.pedido.CrearPedidoUseCase;
 import com.example.transportesys.application.usecase.vehiculo.AsignarConductorAVehiculoUseCase;
 import com.example.transportesys.application.usecase.vehiculo.CrearVehiculoUseCase;
@@ -10,6 +9,7 @@ import com.example.transportesys.domain.model.Conductor;
 import com.example.transportesys.domain.model.Pedido;
 import com.example.transportesys.domain.model.Vehiculo;
 import com.example.transportesys.domain.enums.RolUsuario;
+import com.example.transportesys.domain.repository.PedidoRepository;
 import com.example.transportesys.infrastructure.adapter.out.persistence.entity.UsuarioEntity;
 import com.example.transportesys.infrastructure.adapter.out.persistence.repository.UsuarioJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +18,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -39,7 +40,7 @@ public class DataSeeder implements CommandLineRunner {
     private final CrearConductorUseCase crearConductorUseCase;
     private final AsignarConductorAVehiculoUseCase asignarConductorAVehiculoUseCase;
     private final CrearPedidoUseCase crearPedidoUseCase;
-    private final CambiarEstadoPedidoUseCase cambiarEstadoPedidoUseCase;
+    private final PedidoRepository pedidoRepository;
 
     @Override
     public void run(String... args) {
@@ -209,6 +210,7 @@ public class DataSeeder implements CommandLineRunner {
         // vehiculosIds[5] (GHI-401) queda libre
     }
 
+    @Transactional
     private void crearPedidosDeEjemplo(Long[] vehiculosIds, Long[] conductoresIds) {
         // PEDIDO 1 - COMPLETADO
         Pedido p1 = crearPedidoUseCase.execute(
@@ -219,8 +221,9 @@ public class DataSeeder implements CommandLineRunner {
             "Av. Principal 123, Zona Centro",
             "Parque Industrial Norte, Bodega 5"
         );
-        cambiarEstadoPedidoUseCase.execute(p1.getId(), EstadoPedido.EN_PROGRESO);
-        cambiarEstadoPedidoUseCase.execute(p1.getId(), EstadoPedido.COMPLETADO);
+        p1.iniciar();
+        p1.completar();
+        pedidoRepository.save(p1);
         log.info("  ✓ Pedido #{} creado - COMPLETADO (2500 kg)", p1.getId());
 
         // PEDIDO 2 - EN_PROGRESO
@@ -232,7 +235,8 @@ public class DataSeeder implements CommandLineRunner {
             "Depósito Central, Calle 45 #678",
             "Obra en construcción, Av. Libertador km 12"
         );
-        cambiarEstadoPedidoUseCase.execute(p2.getId(), EstadoPedido.EN_PROGRESO);
+        p2.iniciar();
+        pedidoRepository.save(p2);
         log.info("  ✓ Pedido #{} creado - EN_PROGRESO (4000 kg)", p2.getId());
 
         // PEDIDO 3 - PENDIENTE
@@ -255,8 +259,9 @@ public class DataSeeder implements CommandLineRunner {
             "Torre Empresarial, Piso 8",
             "Nuevo Edificio Corporativo, Zona Norte"
         );
-        cambiarEstadoPedidoUseCase.execute(p4.getId(), EstadoPedido.EN_PROGRESO);
-        cambiarEstadoPedidoUseCase.execute(p4.getId(), EstadoPedido.COMPLETADO);
+        p4.iniciar();
+        p4.completar();
+        pedidoRepository.save(p4);
         log.info("  ✓ Pedido #{} creado - COMPLETADO (3200 kg)", p4.getId());
 
         // PEDIDO 5 - CANCELADO
@@ -268,7 +273,8 @@ public class DataSeeder implements CommandLineRunner {
             "Almacén de paquetería, Calle 12",
             "Centro comercial Plaza Mayor"
         );
-        cambiarEstadoPedidoUseCase.execute(p5.getId(), EstadoPedido.CANCELADO);
+        p5.cancelar();
+        pedidoRepository.save(p5);
         log.info("  ✓ Pedido #{} creado - CANCELADO (800 kg)", p5.getId());
 
         // PEDIDO 6 - PENDIENTE (María)
@@ -291,7 +297,8 @@ public class DataSeeder implements CommandLineRunner {
             "Fábrica de electrodomésticos, Zona Industrial",
             "Tienda departamental, Centro Ciudad"
         );
-        cambiarEstadoPedidoUseCase.execute(p7.getId(), EstadoPedido.EN_PROGRESO);
+        p7.iniciar();
+        pedidoRepository.save(p7);
         log.info("  ✓ Pedido #{} creado - EN_PROGRESO (2800 kg)", p7.getId());
 
         // PEDIDO 8 - PENDIENTE (peso alto para demostrar capacidad)
