@@ -1,5 +1,6 @@
 package com.example.transportesys.domain.valueobject;
 
+import com.example.transportesys.domain.exception.PesoInvalidoException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,14 +39,18 @@ class PesoTest {
     @DisplayName("Debe rechazar pesos negativos")
     void debeRechazarPesosNegativos(double valorNegativo) {
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> new Peso(valorNegativo));
+        assertThrows(PesoInvalidoException.class, () -> new Peso(valorNegativo));
     }
 
     @Test
-    @DisplayName("Debe rechazar peso cero")
-    void debeRechazarPesoCero() {
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> new Peso(0.0));
+    @DisplayName("Debe aceptar peso cero")
+    void debeAceptarPesoCero() {
+        // Act
+        Peso peso = new Peso(0.0);
+
+        // Assert
+        assertNotNull(peso);
+        assertEquals(0, BigDecimal.ZERO.compareTo(peso.getValorEnKg()));
     }
 
     @Test

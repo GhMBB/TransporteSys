@@ -1,5 +1,6 @@
 package com.example.transportesys.domain.valueobject;
 
+import com.example.transportesys.domain.exception.CapacidadInvalidaException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,14 +39,14 @@ class CapacidadTest {
     @DisplayName("Debe rechazar capacidades negativas")
     void debeRechazarCapacidadesNegativas(double valorNegativo) {
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> new Capacidad(valorNegativo));
+        assertThrows(CapacidadInvalidaException.class, () -> new Capacidad(valorNegativo));
     }
 
     @Test
     @DisplayName("Debe rechazar capacidad cero")
     void debeRechazarCapacidadCero() {
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> new Capacidad(0.0));
+        assertThrows(CapacidadInvalidaException.class, () -> new Capacidad(0.0));
     }
 
     @Test

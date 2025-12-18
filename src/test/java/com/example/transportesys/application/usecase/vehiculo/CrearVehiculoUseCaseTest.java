@@ -1,5 +1,6 @@
 package com.example.transportesys.application.usecase.vehiculo;
 
+import com.example.transportesys.domain.exception.CapacidadInvalidaException;
 import com.example.transportesys.domain.exception.PlacaInvalidaException;
 import com.example.transportesys.domain.exception.VehiculoDuplicadoException;
 import com.example.transportesys.domain.model.Vehiculo;
@@ -98,7 +99,7 @@ class CrearVehiculoUseCaseTest {
         Double capacidadNegativa = -100.0;
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(CapacidadInvalidaException.class, () -> {
             crearVehiculoUseCase.execute(placaStr, capacidadNegativa);
         });
 
@@ -113,7 +114,7 @@ class CrearVehiculoUseCaseTest {
         Double capacidadCero = 0.0;
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(CapacidadInvalidaException.class, () -> {
             crearVehiculoUseCase.execute(placaStr, capacidadCero);
         });
 

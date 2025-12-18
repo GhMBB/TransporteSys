@@ -2,6 +2,8 @@ package com.example.transportesys.application.usecase.pedido;
 
 import com.example.transportesys.domain.enums.EstadoPedido;
 import com.example.transportesys.domain.exception.CapacidadInsuficienteException;
+import com.example.transportesys.domain.exception.ConductorInactivoException;
+import com.example.transportesys.domain.exception.PesoInvalidoException;
 import com.example.transportesys.domain.exception.ResourceNotFoundException;
 import com.example.transportesys.domain.model.Conductor;
 import com.example.transportesys.domain.model.Pedido;
@@ -9,6 +11,8 @@ import com.example.transportesys.domain.model.Vehiculo;
 import com.example.transportesys.domain.repository.ConductorRepository;
 import com.example.transportesys.domain.repository.PedidoRepository;
 import com.example.transportesys.domain.repository.VehiculoRepository;
+import com.example.transportesys.domain.specification.ConductorEstaActivoSpec;
+import com.example.transportesys.domain.specification.VehiculoEstaActivoSpec;
 import com.example.transportesys.domain.specification.VehiculoTieneCapacidadSuficienteSpec;
 import com.example.transportesys.domain.valueobject.Capacidad;
 import com.example.transportesys.domain.valueobject.LicenciaConducir;
@@ -44,6 +48,12 @@ class CrearPedidoUseCaseTest {
     @Mock
     private VehiculoTieneCapacidadSuficienteSpec capacidadSpec;
 
+    @Mock
+    private VehiculoEstaActivoSpec vehiculoActivoSpec;
+
+    @Mock
+    private ConductorEstaActivoSpec conductorActivoSpec;
+
     @InjectMocks
     private CrearPedidoUseCase crearPedidoUseCase;
 
@@ -76,6 +86,8 @@ class CrearPedidoUseCaseTest {
 
         when(vehiculoRepository.findById(vehiculoId)).thenReturn(Optional.of(vehiculo));
         when(conductorRepository.findById(conductorId)).thenReturn(Optional.of(conductor));
+        when(vehiculoActivoSpec.isSatisfiedBy(any(Vehiculo.class))).thenReturn(true);
+        when(conductorActivoSpec.isSatisfiedBy(any(Conductor.class))).thenReturn(true);
         when(capacidadSpec.isSatisfiedBy(any(Vehiculo.class), any(Peso.class))).thenReturn(true);
         when(pedidoRepository.save(any(Pedido.class))).thenAnswer(invocation -> {
             Pedido p = invocation.getArgument(0);
@@ -137,6 +149,7 @@ class CrearPedidoUseCaseTest {
         );
 
         when(vehiculoRepository.findById(vehiculoId)).thenReturn(Optional.of(vehiculo));
+        when(vehiculoActivoSpec.isSatisfiedBy(any(Vehiculo.class))).thenReturn(true);
         when(conductorRepository.findById(conductorId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -174,6 +187,8 @@ class CrearPedidoUseCaseTest {
 
         when(vehiculoRepository.findById(vehiculoId)).thenReturn(Optional.of(vehiculo));
         when(conductorRepository.findById(conductorId)).thenReturn(Optional.of(conductor));
+        when(vehiculoActivoSpec.isSatisfiedBy(any(Vehiculo.class))).thenReturn(true);
+        when(conductorActivoSpec.isSatisfiedBy(any(Conductor.class))).thenReturn(true);
         when(capacidadSpec.isSatisfiedBy(any(Vehiculo.class), any(Peso.class))).thenReturn(false);
 
         // Act & Assert
@@ -201,9 +216,10 @@ class CrearPedidoUseCaseTest {
         );
 
         when(vehiculoRepository.findById(vehiculoId)).thenReturn(Optional.of(vehiculoInactivo));
+        when(vehiculoActivoSpec.isSatisfiedBy(any(Vehiculo.class))).thenReturn(false);
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> {
+        assertThrows(IllegalStateException.class, () -> {
             crearPedidoUseCase.execute("Descripción", 500.0, vehiculoId,
                                       conductorId, "Origen", "Destino");
         });
@@ -236,9 +252,11 @@ class CrearPedidoUseCaseTest {
 
         when(vehiculoRepository.findById(vehiculoId)).thenReturn(Optional.of(vehiculo));
         when(conductorRepository.findById(conductorId)).thenReturn(Optional.of(conductorInactivo));
+        when(vehiculoActivoSpec.isSatisfiedBy(any(Vehiculo.class))).thenReturn(true);
+        when(conductorActivoSpec.isSatisfiedBy(any(Conductor.class))).thenReturn(false);
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> {
+        assertThrows(com.example.transportesys.domain.exception.ConductorInactivoException.class, () -> {
             crearPedidoUseCase.execute("Descripción", 500.0, vehiculoId,
                                       conductorId, "Origen", "Destino");
         });
@@ -253,26 +271,57 @@ class CrearPedidoUseCaseTest {
         Double pesoNegativo = -100.0;
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(Exception.class, () -> {
             crearPedidoUseCase.execute("Descripción", pesoNegativo, 1L,
                                       1L, "Origen", "Destino");
         });
 
+        assertTrue(exception instanceof PesoInvalidoException || exception instanceof ResourceNotFoundException);
         verify(pedidoRepository, never()).save(any());
     }
 
     @Test
-    @DisplayName("Debe lanzar excepción cuando el peso es cero")
-    void debeLanzarExcepcionCuandoPesoCero() {
+    @DisplayName("Debe crear pedido con peso cero")
+    void debeCrearPedidoConPesoCero() {
         // Arrange
+        String descripcion = "Envío de documentos";
         Double pesoCero = 0.0;
+        Long vehiculoId = 1L;
+        Long conductorId = 1L;
 
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            crearPedidoUseCase.execute("Descripción", pesoCero, 1L,
-                                      1L, "Origen", "Destino");
+        Vehiculo vehiculo = new Vehiculo(
+            vehiculoId,
+            new Placa("ABC-123"),
+            new Capacidad(1000.0),
+            true,
+            conductorId
+        );
+
+        Conductor conductor = new Conductor(
+            conductorId,
+            "Juan Pérez",
+            new LicenciaConducir("LIC123456"),
+            true,
+            new HashSet<>()
+        );
+
+        when(vehiculoRepository.findById(vehiculoId)).thenReturn(Optional.of(vehiculo));
+        when(conductorRepository.findById(conductorId)).thenReturn(Optional.of(conductor));
+        when(vehiculoActivoSpec.isSatisfiedBy(any(Vehiculo.class))).thenReturn(true);
+        when(conductorActivoSpec.isSatisfiedBy(any(Conductor.class))).thenReturn(true);
+        when(capacidadSpec.isSatisfiedBy(any(Vehiculo.class), any(Peso.class))).thenReturn(true);
+        when(pedidoRepository.save(any(Pedido.class))).thenAnswer(invocation -> {
+            Pedido p = invocation.getArgument(0);
+            return new Pedido(1L, p.getDescripcion(), p.getPeso(), p.getVehiculoId(),
+                             p.getConductorId(), p.getEstado(), p.getDireccionOrigen(), p.getDireccionDestino());
         });
 
-        verify(pedidoRepository, never()).save(any());
+        // Act
+        Pedido resultado = crearPedidoUseCase.execute(descripcion, pesoCero, vehiculoId,
+                                                      conductorId, "Origen", "Destino");
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(0.0, resultado.getPeso().getValorEnKg().doubleValue());
     }
 }

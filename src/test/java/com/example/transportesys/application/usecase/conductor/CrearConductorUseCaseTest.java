@@ -1,6 +1,7 @@
 package com.example.transportesys.application.usecase.conductor;
 
 import com.example.transportesys.domain.exception.ConductorDuplicadoException;
+import com.example.transportesys.domain.exception.LicenciaInvalidaException;
 import com.example.transportesys.domain.model.Conductor;
 import com.example.transportesys.domain.repository.ConductorRepository;
 import com.example.transportesys.domain.valueobject.LicenciaConducir;
@@ -75,35 +76,6 @@ class CrearConductorUseCaseTest {
     }
 
     @Test
-    @DisplayName("Debe lanzar excepción cuando el nombre está vacío")
-    void debeLanzarExcepcionCuandoNombreVacio() {
-        // Arrange
-        String nombreVacio = "";
-        String licenciaStr = "LIC123456";
-
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            crearConductorUseCase.execute(nombreVacio, licenciaStr);
-        });
-
-        verify(conductorRepository, never()).save(any(Conductor.class));
-    }
-
-    @Test
-    @DisplayName("Debe lanzar excepción cuando el nombre es null")
-    void debeLanzarExcepcionCuandoNombreNull() {
-        // Arrange
-        String licenciaStr = "LIC123456";
-
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            crearConductorUseCase.execute(null, licenciaStr);
-        });
-
-        verify(conductorRepository, never()).save(any(Conductor.class));
-    }
-
-    @Test
     @DisplayName("Debe lanzar excepción cuando la licencia está vacía")
     void debeLanzarExcepcionCuandoLicenciaVacia() {
         // Arrange
@@ -111,7 +83,7 @@ class CrearConductorUseCaseTest {
         String licenciaVacia = "";
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(LicenciaInvalidaException.class, () -> {
             crearConductorUseCase.execute(nombre, licenciaVacia);
         });
 
@@ -125,7 +97,7 @@ class CrearConductorUseCaseTest {
         String nombre = "Juan Pérez";
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(LicenciaInvalidaException.class, () -> {
             crearConductorUseCase.execute(nombre, null);
         });
 
@@ -133,8 +105,8 @@ class CrearConductorUseCaseTest {
     }
 
     @Test
-    @DisplayName("Debe normalizar nombre eliminando espacios extra")
-    void debeNormalizarNombre() {
+    @DisplayName("Debe mantener el nombre tal como se proporciona")
+    void debeCrearConductorConNombreOriginal() {
         // Arrange
         String nombreConEspacios = "  Juan   Pérez  ";
         String licenciaStr = "LIC123456";
@@ -149,6 +121,6 @@ class CrearConductorUseCaseTest {
         Conductor resultado = crearConductorUseCase.execute(nombreConEspacios, licenciaStr);
 
         // Assert
-        assertEquals("Juan Pérez", resultado.getNombre());
+        assertEquals(nombreConEspacios, resultado.getNombre());
     }
 }

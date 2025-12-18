@@ -75,7 +75,7 @@ class PlacaTest {
     @DisplayName("Debe lanzar excepción cuando la placa es null")
     void debeLanzarExcepcionCuandoPlacaNull() {
         // Act & Assert
-        assertThrows(NullPointerException.class, () -> new Placa(null));
+        assertThrows(PlacaInvalidaException.class, () -> new Placa(null));
     }
 
     @Test
