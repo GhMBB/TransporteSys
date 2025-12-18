@@ -1,6 +1,8 @@
 # TransporteSys - Sistema de Transporte Urbano
 
 Sistema de gestión de transporte urbano desarrollado con **Clean Architecture** y Spring Boot 4.0.
+## Postman
+https://bormauricio1-5654230.postman.co/workspace/Mauricio-Bord%C3%B3n's-Workspace~1fa18460-68f2-447b-8994-6736a869da4e/collection/50916082-b9978be4-c96e-4d07-97f7-49e004490902?action=share&creator=50916082
 
 ## 🏗️ Arquitectura
 
@@ -310,10 +312,10 @@ docker build -t transportesys:latest .
 docker run -p 8080:8080 transportesys:latest
 
 # Docker Compose
-docker-compose up -d          # Levantar
-docker-compose down           # Bajar
-docker-compose logs -f app    # Ver logs
-docker-compose restart app    # Reiniciar
+docker-compose up -d          
+docker-compose down           
+docker-compose logs -f app    
+docker-compose restart app   
 ```
 
 
