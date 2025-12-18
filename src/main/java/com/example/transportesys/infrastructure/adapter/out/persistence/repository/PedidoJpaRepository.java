@@ -24,10 +24,10 @@ public interface PedidoJpaRepository extends JpaRepository<PedidoEntity, Long> {
 
     List<PedidoEntity> findByConductorId(Long conductorId);
 
-    @Query("SELECT p FROM PedidoEntity p WHERE p.vehiculoId = :vehiculoId AND p.estado IN ('PENDIENTE', 'EN_PROGRESO')")
+    @Query("SELECT p FROM PedidoEntity p WHERE p.vehiculoId = :vehiculoId AND p.estado IN (com.example.transportesys.domain.enums.EstadoPedido.PENDIENTE, com.example.transportesys.domain.enums.EstadoPedido.EN_PROGRESO)")
     List<PedidoEntity> findActivosByVehiculoId(@Param("vehiculoId") Long vehiculoId);
 
-    @Query("SELECT COUNT(p) FROM PedidoEntity p WHERE p.vehiculoId = :vehiculoId AND p.estado IN ('PENDIENTE', 'EN_PROGRESO')")
+    @Query("SELECT COUNT(p) FROM PedidoEntity p WHERE p.vehiculoId = :vehiculoId AND p.estado IN (com.example.transportesys.domain.enums.EstadoPedido.PENDIENTE, com.example.transportesys.domain.enums.EstadoPedido.EN_PROGRESO)")
     long countActivosByVehiculoId(@Param("vehiculoId") Long vehiculoId);
 
     List<PedidoEntity> findByFechaCreacionBetween(LocalDateTime inicio, LocalDateTime fin);
