@@ -37,17 +37,23 @@ public class PedidoPersistenceMapper {
         }
 
         Peso peso = new Peso(entity.getPesoKg());
-        Pedido pedido = new Pedido(entity.getId(), entity.getDescripcion(), peso);
 
-        pedido.setDireccionOrigen(entity.getDireccionOrigen());
-        pedido.setDireccionDestino(entity.getDireccionDestino());
+        // Use the full constructor to restore all fields including estado
+        // This avoids calling domain validation methods that only work in PENDIENTE state
+        Pedido pedido = new Pedido(
+            entity.getId(),
+            entity.getDescripcion(),
+            peso,
+            entity.getVehiculoId(),
+            entity.getConductorId(),
+            entity.getEstado(),
+            entity.getDireccionOrigen(),
+            entity.getDireccionDestino()
+        );
+
+        // Restore timestamps from database
         pedido.setFechaCreacion(entity.getFechaCreacion());
         pedido.setFechaActualizacion(entity.getFechaActualizacion());
-
-        // Asignar vehículo y conductor si existen
-        if (entity.getVehiculoId() != null && entity.getConductorId() != null) {
-            pedido.asignarVehiculoYConductor(entity.getVehiculoId(), entity.getConductorId());
-        }
 
         return pedido;
     }
