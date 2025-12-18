@@ -39,20 +39,23 @@ public class VehiculoRepositoryAdapter implements VehiculoRepository {
 
     @Override
     public Optional<Vehiculo> findById(Long id) {
-        return jpaRepository.findById(id)
+        // Solo retorna vehículos activos (eliminación lógica)
+        return jpaRepository.findByIdAndActivoTrue(id)
             .map(mapper::toDomain);
     }
 
     @Override
     public List<Vehiculo> findAll() {
-        return jpaRepository.findAll().stream()
+        // Solo retorna vehículos activos (eliminación lógica)
+        return jpaRepository.findAllActive().stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());
     }
 
     @Override
     public List<Vehiculo> findAll(int page, int size) {
-        return jpaRepository.findAll(PageRequest.of(page, size))
+        // Solo retorna vehículos activos (eliminación lógica)
+        return jpaRepository.findAllActive(PageRequest.of(page, size))
             .stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());
@@ -60,7 +63,8 @@ public class VehiculoRepositoryAdapter implements VehiculoRepository {
 
     @Override
     public PageResult<Vehiculo> findAllPaged(int page, int size) {
-        Page<VehiculoEntity> pageResult = jpaRepository.findAll(PageRequest.of(page, size));
+        // Solo retorna vehículos activos (eliminación lógica)
+        Page<VehiculoEntity> pageResult = jpaRepository.findAllActive(PageRequest.of(page, size));
 
         List<Vehiculo> content = pageResult.getContent().stream()
             .map(mapper::toDomain)
@@ -97,14 +101,16 @@ public class VehiculoRepositoryAdapter implements VehiculoRepository {
 
     @Override
     public List<Vehiculo> findByConductorId(Long conductorId) {
-        return jpaRepository.findByConductorId(conductorId).stream()
+        // Solo retorna vehículos activos (eliminación lógica)
+        return jpaRepository.findByConductorIdAndActivoTrue(conductorId).stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());
     }
 
     @Override
     public Optional<Vehiculo> findByPlaca(String placa) {
-        return jpaRepository.findByPlaca(placa)
+        // Solo retorna vehículos activos (eliminación lógica)
+        return jpaRepository.findByPlacaAndActivoTrue(placa)
             .map(mapper::toDomain);
     }
 
@@ -115,7 +121,8 @@ public class VehiculoRepositoryAdapter implements VehiculoRepository {
 
     @Override
     public boolean existsByPlaca(String placa) {
-        return jpaRepository.existsByPlaca(placa);
+        // Solo verifica existencia de vehículos activos (eliminación lógica)
+        return jpaRepository.existsByPlacaAndActivoTrue(placa);
     }
 
     @Override

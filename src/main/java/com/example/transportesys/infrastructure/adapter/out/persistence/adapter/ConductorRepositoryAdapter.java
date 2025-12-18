@@ -39,20 +39,23 @@ public class ConductorRepositoryAdapter implements ConductorRepository {
 
     @Override
     public Optional<Conductor> findById(Long id) {
-        return jpaRepository.findById(id)
+        // Solo retorna conductores activos (eliminación lógica)
+        return jpaRepository.findByIdAndActivoTrue(id)
             .map(mapper::toDomain);
     }
 
     @Override
     public List<Conductor> findAll() {
-        return jpaRepository.findAll().stream()
+        // Solo retorna conductores activos (eliminación lógica)
+        return jpaRepository.findAllActive().stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());
     }
 
     @Override
     public List<Conductor> findAll(int page, int size) {
-        return jpaRepository.findAll(PageRequest.of(page, size))
+        // Solo retorna conductores activos (eliminación lógica)
+        return jpaRepository.findAllActive(PageRequest.of(page, size))
             .stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());
@@ -60,7 +63,8 @@ public class ConductorRepositoryAdapter implements ConductorRepository {
 
     @Override
     public PageResult<Conductor> findAllPaged(int page, int size) {
-        Page pageResult = jpaRepository.findAll(PageRequest.of(page, size));
+        // Solo retorna conductores activos (eliminación lógica)
+        Page pageResult = jpaRepository.findAllActive(PageRequest.of(page, size));
 
         List<Conductor> content = (List<Conductor>) pageResult.getContent().stream()
             .map(entity -> mapper.toDomain((com.example.transportesys.infrastructure.adapter.out.persistence.entity.ConductorEntity) entity))
@@ -97,7 +101,8 @@ public class ConductorRepositoryAdapter implements ConductorRepository {
 
     @Override
     public Optional<Conductor> findByLicencia(String licencia) {
-        return jpaRepository.findByLicencia(licencia)
+        // Solo retorna conductores activos (eliminación lógica)
+        return jpaRepository.findByLicenciaAndActivoTrue(licencia)
             .map(mapper::toDomain);
     }
 
@@ -108,7 +113,8 @@ public class ConductorRepositoryAdapter implements ConductorRepository {
 
     @Override
     public boolean existsByLicencia(String licencia) {
-        return jpaRepository.existsByLicencia(licencia);
+        // Solo verifica existencia de conductores activos (eliminación lógica)
+        return jpaRepository.existsByLicenciaAndActivoTrue(licencia);
     }
 
     @Override

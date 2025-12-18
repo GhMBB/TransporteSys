@@ -34,25 +34,29 @@ public class UsuarioRepositoryAdapter implements UsuarioRepository {
 
     @Override
     public Optional<Usuario> findById(Long id) {
-        return jpaRepository.findById(id)
+        // Solo retorna usuarios activos (eliminación lógica)
+        return jpaRepository.findByIdAndActivoTrue(id)
             .map(mapper::toDomain);
     }
 
     @Override
     public Optional<Usuario> findByUsername(String username) {
-        return jpaRepository.findByUsername(username)
+        // Solo retorna usuarios activos (eliminación lógica)
+        return jpaRepository.findByUsernameAndActivoTrue(username)
             .map(mapper::toDomain);
     }
 
     @Override
     public Optional<Usuario> findByEmail(String email) {
-        return jpaRepository.findByEmail(email)
+        // Solo retorna usuarios activos (eliminación lógica)
+        return jpaRepository.findByEmailAndActivoTrue(email)
             .map(mapper::toDomain);
     }
 
     @Override
     public List<Usuario> findAll() {
-        return jpaRepository.findAll().stream()
+        // Solo retorna usuarios activos (eliminación lógica)
+        return jpaRepository.findAllActive().stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());
     }
@@ -64,11 +68,13 @@ public class UsuarioRepositoryAdapter implements UsuarioRepository {
 
     @Override
     public boolean existsByUsername(String username) {
-        return jpaRepository.existsByUsername(username);
+        // Solo verifica existencia de usuarios activos (eliminación lógica)
+        return jpaRepository.existsByUsernameAndActivoTrue(username);
     }
 
     @Override
     public boolean existsByEmail(String email) {
-        return jpaRepository.existsByEmail(email);
+        // Solo verifica existencia de usuarios activos (eliminación lógica)
+        return jpaRepository.existsByEmailAndActivoTrue(email);
     }
 }
